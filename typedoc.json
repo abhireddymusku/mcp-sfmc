@@ -1,0 +1,10 @@
+{
+  "entryPoints": ["src/sdk.ts"],
+  "out": "docs",
+  "plugin": ["typedoc-plugin-markdown"],
+  "name": "mcp-sfmc SDK",
+  "readme": "none",
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "navigationLinks": {}
+}

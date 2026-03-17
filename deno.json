@@ -1,0 +1,6 @@
+{
+  "_comment": "Example Deno usage — install via npm: prefix",
+  "imports": {
+    "mcp-sfmc/sdk": "npm:mcp-sfmc/sdk"
+  }
+}

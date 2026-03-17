@@ -1,0 +1,64 @@
+{
+  "name": "mcp-sfmc",
+  "version": "0.1.0",
+  "description": "MCP server for Salesforce Marketing Cloud — Content Builder, Journey Builder, send performance, and Data Extensions",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "salesforce",
+    "sfmc",
+    "marketing-cloud",
+    "email",
+    "content-builder",
+    "journey-builder"
+  ],
+  "homepage": "https://github.com/emailforge/mcp-sfmc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emailforge/mcp-sfmc.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./sdk": {
+      "deno": "./dist/sdk.js",
+      "bun": "./dist/sdk.js",
+      "import": "./dist/sdk.js",
+      "types": "./dist/sdk.d.ts"
+    }
+  },
+  "bin": {
+    "mcp-sfmc": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "npm run build && node --test dist/lib/html-resolver.test.js dist/lib/dispatch.test.js",
+    "docs": "typedoc",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.4.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

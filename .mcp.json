@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "sfmc": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "SFMC_SUBDOMAIN": "",
+        "SFMC_CLIENT_ID": "",
+        "SFMC_CLIENT_SECRET": "",
+        "SFMC_MID": ""
+      }
+    }
+  }
+}
