@@ -1,17 +1,17 @@
 # mcp-sfmc
 
-> Read-only MCP server for Salesforce Marketing Cloud — give Claude native access to Content Builder, Journey Builder, Automation Studio, SMS, Push, and more. Switch between business units mid-conversation.
+> Read-only MCP server for Salesforce Marketing Cloud — connect any MCP-compatible AI assistant to Content Builder, Journey Builder, Automation Studio, SMS, Push, and more. Switch between business units mid-conversation.
 
-[![npm](https://img.shields.io/npm/v/mcp-sfmc)](https://www.npmjs.com/package/mcp-sfmc)
+[![npm](https://img.shields.io/npm/v/sfmc-mcp)](https://www.npmjs.com/package/sfmc-mcp)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ## What it does
 
-`mcp-sfmc` is a [Model Context Protocol](https://modelcontextprotocol.io) server that exposes your Salesforce Marketing Cloud account as callable tools for Claude and any other MCP-compatible AI client.
+`sfmc-mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server that exposes your Salesforce Marketing Cloud account as callable tools for any MCP-compatible AI assistant — Claude, Cursor, Windsurf, or your own agent.
 
-**Read-only by design** — all 40 tools are GET operations. No data is created, modified, or deleted. No individual subscriber PII is returned.
+**Read-only by design** — all tools are GET operations. No data is created, modified, or deleted. No individual subscriber PII is returned.
 
-Once connected, you can ask Claude things like:
+Once connected, you can ask your AI assistant things like:
 
 - *"Show me the HTML for the email named 'Welcome Series - Email 1'"*
 - *"Which journeys are currently running and what emails are in each one?"*
@@ -39,14 +39,14 @@ Once connected, you can ask Claude things like:
 
 ### 2. Configure your MCP client
 
-**Claude Desktop** — add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+**Claude Desktop** — add to `~/Library/Application Support/Claude/claude_desktop_config.json` (or the equivalent config file for your MCP client):
 
 ```json
 {
   "mcpServers": {
     "sfmc": {
       "command": "npx",
-      "args": ["-y", "mcp-sfmc"],
+      "args": ["-y", "sfmc-mcp"],
       "env": {
         "SFMC_SUBDOMAIN": "your-subdomain",
         "SFMC_CLIENT_ID": "your-client-id",
@@ -58,14 +58,14 @@ Once connected, you can ask Claude things like:
 }
 ```
 
-**Claude Code** — add to your project's `.mcp.json`:
+**Claude Code / Cursor / other MCP clients** — add to your project's `.mcp.json` or equivalent:
 
 ```json
 {
   "mcpServers": {
     "sfmc": {
       "command": "npx",
-      "args": ["-y", "mcp-sfmc"],
+      "args": ["-y", "sfmc-mcp"],
       "env": {
         "SFMC_SUBDOMAIN": "your-subdomain",
         "SFMC_CLIENT_ID": "your-client-id",
@@ -85,9 +85,9 @@ Once connected, you can ask Claude things like:
 | `SFMC_CLIENT_SECRET` | ✓ | Installed Package Client Secret |
 | `SFMC_MID` | — | Child BU MID — scope all requests to a specific business unit |
 
-### 3. Restart Claude Desktop — you're done
+### 3. Restart your MCP client — you're done
 
-## Available tools (42 total)
+## Available tools (46 total)
 
 ### Business Units
 
@@ -113,8 +113,10 @@ Once connected, you can ask Claude things like:
 | Tool | Description |
 |---|---|
 | `sfmc_list_journeys` | List journeys filtered by status (Running / Draft / Stopped / Paused) |
-| `sfmc_get_journey` | Full journey detail — activity sequence, email asset IDs, population stats |
+| `sfmc_get_journey` | Full journey detail — activity sequence, entry source, email asset IDs, population stats |
 | `sfmc_get_journey_stats` | Per-activity send stats — sent, opened, clicked, bounced, opted-out |
+| `sfmc_diff_journey_versions` | Compare two versions — see what activities were added, removed, or changed |
+| `sfmc_get_journey_full` | **Full picture in one call** — journey + entry automation/DE + all email HTML + stats |
 
 ### Send Performance
 
@@ -130,14 +132,25 @@ Once connected, you can ask Claude things like:
 |---|---|
 | `sfmc_list_data_extensions` | List DEs with name and field count |
 | `sfmc_get_de_schema` | Field schema — names, types, primary keys (useful for merge tag discovery) |
+| `sfmc_get_de_usage` | **Where is this DE used?** — journeys using it as entry source + automations writing to it |
 
 ### Automation Studio
 
 | Tool | Description |
 |---|---|
 | `sfmc_list_automations` | List automations with status, schedule, and run times |
-| `sfmc_get_automation` | Full automation detail including steps and activity sequence |
+| `sfmc_get_automation` | Full automation detail including steps, activity sequence, and linked journey IDs |
 | `sfmc_get_automation_runs` | Run history for a specific automation |
+| `sfmc_get_automation_full` | **Full picture in one call** — automation + last run + all linked journey details |
+
+### Reverse Lookups
+
+Cross-object scans — these make multiple API calls and may take a few seconds on large accounts.
+
+| Tool | Description |
+|---|---|
+| `sfmc_find_email_usage` | Given a content asset ID, find all active journeys that send it |
+| `sfmc_get_de_usage` | Given a DE key, find all journeys using it as entry source + automations writing to it |
 
 ### Campaigns
 
@@ -240,11 +253,11 @@ If your SFMC org has multiple business units, you have two options:
 You can use the same tools directly in any Node.js project — no MCP client or LLM needed.
 
 ```bash
-npm install mcp-sfmc
+npm install sfmc-mcp
 ```
 
 ```typescript
-import { createClient } from 'mcp-sfmc/sdk'
+import { createClient } from 'sfmc-mcp/sdk'
 
 const sfmc = createClient({
   subdomain: 'mc563885gzs27c5t9',
@@ -267,7 +280,7 @@ const bu2 = sfmc.withMid('12345678')
 const bu2Journeys = await bu2.listJourneys()
 ```
 
-All 42 tools are available as methods. Token auth and rate-limit retry are handled automatically. Full TypeScript types are exported from `mcp-sfmc/sdk`.
+All 42 tools are available as methods. Token auth and rate-limit retry are handled automatically. Full TypeScript types are exported from `sfmc-mcp/sdk`.
 
 ## Notes on template-based emails
 

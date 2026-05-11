@@ -1,6 +1,6 @@
 {
-  "name": "mcp-sfmc",
-  "version": "0.1.0",
+  "name": "sfmc-mcp",
+  "version": "1.2.0",
   "description": "MCP server for Salesforce Marketing Cloud — Content Builder, Journey Builder, send performance, and Data Extensions",
   "keywords": [
     "mcp",
@@ -12,10 +12,10 @@
     "content-builder",
     "journey-builder"
   ],
-  "homepage": "https://github.com/emailforge/mcp-sfmc",
+  "homepage": "https://github.com/abhireddymusku/mcp-sfmc",
   "repository": {
     "type": "git",
-    "url": "https://github.com/emailforge/mcp-sfmc.git"
+    "url": "https://github.com/abhireddymusku/mcp-sfmc.git"
   },
   "license": "MIT",
   "type": "module",
@@ -44,9 +44,9 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
-    "test": "npm run build && node --test dist/lib/html-resolver.test.js dist/lib/dispatch.test.js",
+    "test": "tsc -p tsconfig.test.json && node --test dist/lib/html-resolver.test.js dist/lib/dispatch.test.js dist/lib/error-handling.test.js dist/lib/schemas.test.js dist/lib/cache.test.js dist/lib/paginate.test.js dist/lib/otel.test.js dist/tools/compound.test.js dist/tools/lookups.test.js dist/tools/journey-helpers.test.js dist/tools/automation-helpers.test.js dist/sdk.test.js dist/e2e.test.js",
     "docs": "typedoc",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",
